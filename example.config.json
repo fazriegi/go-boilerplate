@@ -16,5 +16,9 @@
   },
   "secret": {
     "encryptionKey": "32-character-long-key"
+  },
+  "jwt": {
+    "key": "jwt-key",
+    "expHour": 2
   }
 }
