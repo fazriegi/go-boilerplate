@@ -18,7 +18,7 @@ import (
 func main() {
 	viperConfig := config.NewViper()
 	database.NewMysql(viperConfig)
-	jwt := pkg.InitJWT(viperConfig)
+	jwt := pkg.InitJWT(viperConfig.GetString("jwt.key"), viperConfig.GetUint16("jwt.expHour"))
 	file := logger.New(viperConfig)
 	defer file.Close()
 

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/spf13/viper"
 )
 
 type JWT struct {
@@ -13,10 +12,7 @@ type JWT struct {
 	expHour   uint16
 }
 
-func InitJWT(viper *viper.Viper) *JWT {
-	secretKey := viper.GetString("jwt.key")
-	expHour := viper.GetUint16("jwt.expHour")
-
+func InitJWT(secretKey string, expHour uint16) *JWT {
 	return &JWT{
 		secretKey,
 		expHour,
