@@ -5,6 +5,7 @@ import (
 
 	"github.com/doug-martin/goqu/v9"
 	_ "github.com/doug-martin/goqu/v9/dialect/mysql"
+	"github.com/fazriegi/go-boilerplate/internal/infrastructure/database"
 )
 
 func QueryWithPagination(dataset *goqu.SelectDataset, req PaginationRequest) *goqu.SelectDataset {
@@ -35,5 +36,5 @@ func QueryWithPagination(dataset *goqu.SelectDataset, req PaginationRequest) *go
 }
 
 func GetDialect() goqu.DialectWrapper {
-	return goqu.Dialect("mysql")
+	return goqu.Dialect(database.GetDriver())
 }

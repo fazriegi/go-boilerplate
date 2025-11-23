@@ -15,8 +15,8 @@ func NewMysql(viper *viper.Viper) {
 	password := viper.GetString("db.password")
 	name := viper.GetString("db.name")
 	port := viper.GetInt32("db.port")
+	DRIVER = viper.GetString("db.driver")
 
-	dbDriver := "mysql"
 	dbSource := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&charset=utf8mb4&loc=Local",
 		username,
 		password,
@@ -25,15 +25,14 @@ func NewMysql(viper *viper.Viper) {
 		name,
 	)
 
-	conn, err := sqlx.Open(dbDriver, dbSource)
+	var err error
+	DB, err = sqlx.Open(DRIVER, dbSource)
 	if err != nil {
 		log.Fatal("failed to connect to database:", err)
 	}
-	if err = conn.Ping(); err != nil {
+	if err = DB.Ping(); err != nil {
 		log.Fatal("failed to ping database:", err)
 	}
 
 	log.Println("connected to database successfully")
-
-	DB = conn
 }

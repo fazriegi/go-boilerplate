@@ -8,6 +8,7 @@
     "outputFile": "/path/to/file.log"
   },
   "db": {
+    "driver": "mysql",
     "host": "localhost",
     "username": "user",
     "password": "pass",
