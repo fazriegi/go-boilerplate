@@ -14,3 +14,7 @@ run: build
 
 clean:
 	rm -f $(BINARY)
+
+
+test:
+	go test ./... -v

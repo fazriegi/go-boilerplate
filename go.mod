@@ -3,6 +3,7 @@ module github.com/fazriegi/go-boilerplate
 go 1.24.4
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/doug-martin/goqu/v9 v9.19.0
 	github.com/go-playground/validator/v10 v10.27.0
@@ -12,7 +13,6 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.20.1
 	golang.org/x/crypto v0.40.0
-	golang.org/x/sync v0.16.0
 )
 
 require (

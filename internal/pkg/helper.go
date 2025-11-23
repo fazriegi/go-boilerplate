@@ -7,6 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// returns elements that appear in both slice1 and slice2.
 func Intersection[T comparable](slice1, slice2 []T) []T {
 	set := make(map[T]struct{})
 	for _, v := range slice1 {
