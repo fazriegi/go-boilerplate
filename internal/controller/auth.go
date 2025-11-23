@@ -37,7 +37,7 @@ func (c *authController) Register(ctx *fiber.Ctx) error {
 
 	if err := ctx.BodyParser(&reqBody); err != nil {
 		c.logger.Errorf("error parsing request body: %s", err.Error())
-		return ctx.Status(http.StatusBadRequest).JSON(response.Create(http.StatusBadRequest, pkg.ErrParseQueryParam.Error(), nil))
+		return ctx.Status(http.StatusBadRequest).JSON(pkg.NewResponse(http.StatusBadRequest, pkg.ErrParseQueryParam.Error(), nil, nil))
 	}
 
 	// validate reqBody struct
@@ -47,7 +47,7 @@ func (c *authController) Register(ctx *fiber.Ctx) error {
 			"errors": validationErr,
 		}
 
-		return ctx.Status(http.StatusUnprocessableEntity).JSON(response.Create(http.StatusUnprocessableEntity, pkg.ErrValidation.Error(), errResponse))
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(pkg.NewResponse(http.StatusUnprocessableEntity, pkg.ErrValidation.Error(), errResponse, nil))
 	}
 
 	response = c.usecase.Register(&reqBody)
@@ -63,7 +63,7 @@ func (c *authController) Login(ctx *fiber.Ctx) error {
 
 	if err := ctx.BodyParser(&reqBody); err != nil {
 		c.logger.Errorf("error parsing request body: %s", err.Error())
-		return ctx.Status(http.StatusBadRequest).JSON(response.Create(http.StatusBadRequest, pkg.ErrParseQueryParam.Error(), nil))
+		return ctx.Status(http.StatusBadRequest).JSON(pkg.NewResponse(http.StatusBadRequest, pkg.ErrParseQueryParam.Error(), nil, nil))
 	}
 
 	// validate reqBody struct
@@ -73,7 +73,7 @@ func (c *authController) Login(ctx *fiber.Ctx) error {
 			"errors": validationErr,
 		}
 
-		return ctx.Status(http.StatusUnprocessableEntity).JSON(response.Create(http.StatusUnprocessableEntity, pkg.ErrValidation.Error(), errResponse))
+		return ctx.Status(http.StatusUnprocessableEntity).JSON(pkg.NewResponse(http.StatusUnprocessableEntity, pkg.ErrValidation.Error(), errResponse, nil))
 	}
 
 	response = c.usecase.Login(&reqBody)

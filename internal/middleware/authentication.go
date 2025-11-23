@@ -17,7 +17,7 @@ func Authentication(jwt *pkg.JWT) func(ctx *fiber.Ctx) error {
 		isHasBearer := strings.HasPrefix(header, "Bearer")
 
 		if !isHasBearer {
-			response = response.Create(http.StatusUnauthorized, "sign in to proceed", nil)
+			response = pkg.NewResponse(http.StatusUnauthorized, "sign in to proceed", nil, nil)
 
 			return ctx.Status(response.Code).JSON(response)
 		}
@@ -26,8 +26,7 @@ func Authentication(jwt *pkg.JWT) func(ctx *fiber.Ctx) error {
 
 		verifiedToken, err := jwt.VerifyJWTTOken(tokenString)
 		if err != nil {
-			response = response.Create(http.StatusUnauthorized, err.Error(), nil)
-
+			response = pkg.NewResponse(http.StatusUnauthorized, err.Error(), nil, nil)
 			return ctx.Status(response.Code).JSON(response)
 		}
 

@@ -1,8 +1,11 @@
 package pkg
 
+import "net/http"
+
 type Response struct {
 	Status
-	Data any `json:"data"`
+	Data           any             `json:"data,omitempty"`
+	PaginationMeta *PaginationMeta `json:"pagination_meta,omitempty"`
 }
 
 type Status struct {
@@ -12,35 +15,35 @@ type Status struct {
 	IsSuccess bool   `json:"is_success"`
 }
 
-type PaginationResponse struct {
-	Page             int   `json:"page"`
-	TotalPages       int   `json:"total_pages"`
-	TotalRows        int64 `json:"total_rows"`
-	CurrentRowsCount int   `json:"current_rows_count"`
+type PaginationMeta struct {
+	Page       int `json:"page"`
+	Limit      int `json:"limit"`
+	Total      int `json:"total"`
+	TotalPages int `json:"total_pages"`
 }
 
-func (s Response) Create(code int, message string, data any) Response {
-	statuses := map[int]string{
-		500: "internal server error",
-		422: "unprocessable content",
-		415: "unsupported media type",
-		413: "request entity too large",
-		404: "not found",
-		401: "unauthorized",
-		400: "bad request",
-		303: "redirect",
-		204: "no content",
-		201: "created",
-		200: "success",
+func buildStatus(code int, msg string) Status {
+	statusText := http.StatusText(code)
+	if statusText == "" {
+		statusText = "Unknown Status"
 	}
 
+	if msg == "" {
+		msg = statusText
+	}
+
+	return Status{
+		Code:      code,
+		Message:   msg,
+		Status:    statusText,
+		IsSuccess: code >= 200 && code <= 299,
+	}
+}
+
+func NewResponse(code int, message string, data any, paginationMeta *PaginationMeta) Response {
 	return Response{
-		Status: Status{
-			Code:      code,
-			Message:   message,
-			Status:    statuses[code],
-			IsSuccess: code >= 200 && code <= 299,
-		},
-		Data: data,
+		Status:         buildStatus(code, message),
+		Data:           data,
+		PaginationMeta: paginationMeta,
 	}
 }

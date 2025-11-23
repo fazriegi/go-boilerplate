@@ -46,22 +46,22 @@ func (u *authUsecase) Register(props *entity.RegisterRequest) (resp pkg.Response
 	user, err = u.userRepo.GetByUsername(props.Username, db)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		u.log.Errorf("userRepo.GetByUsername: %s", err.Error())
-		return resp.Create(http.StatusInternalServerError, pkg.ErrServer.Error(), nil)
+		return pkg.NewResponse(http.StatusInternalServerError, pkg.ErrServer.Error(), nil, nil)
 	}
 
 	if user.Username != "" {
-		return resp.Create(http.StatusBadRequest, "username already exists", nil)
+		return pkg.NewResponse(http.StatusBadRequest, "username already exists", nil, nil)
 	}
 
 	if hashedPassword, err = pkg.HashPassword(props.Password); err != nil {
 		u.log.Errorf("pkg.HashPassword: %s", err.Error())
-		return resp.Create(http.StatusInternalServerError, pkg.ErrServer.Error(), nil)
+		return pkg.NewResponse(http.StatusInternalServerError, pkg.ErrServer.Error(), nil, nil)
 	}
 
 	tx, err := db.Beginx()
 	if err != nil {
 		u.log.Errorf("error start transaction: %s", err.Error())
-		return resp.Create(http.StatusInternalServerError, pkg.ErrServer.Error(), nil)
+		return pkg.NewResponse(http.StatusInternalServerError, pkg.ErrServer.Error(), nil, nil)
 	}
 	defer tx.Rollback()
 
@@ -75,12 +75,12 @@ func (u *authUsecase) Register(props *entity.RegisterRequest) (resp pkg.Response
 	_, err = u.userRepo.Insert(&user, tx)
 	if err != nil {
 		u.log.Errorf("userRepo.Insert: %s", err.Error())
-		return resp.Create(http.StatusInternalServerError, pkg.ErrServer.Error(), nil)
+		return pkg.NewResponse(http.StatusInternalServerError, pkg.ErrServer.Error(), nil, nil)
 	}
 
 	if err := tx.Commit(); err != nil {
 		u.log.Errorf("failed commit tx: %s", err.Error())
-		return resp.Create(http.StatusInternalServerError, pkg.ErrServer.Error(), nil)
+		return pkg.NewResponse(http.StatusInternalServerError, pkg.ErrServer.Error(), nil, nil)
 	}
 
 	createdUser := entity.UserResponse{
@@ -89,7 +89,7 @@ func (u *authUsecase) Register(props *entity.RegisterRequest) (resp pkg.Response
 		Username: user.Username,
 	}
 
-	return resp.Create(http.StatusCreated, "success", createdUser)
+	return pkg.NewResponse(http.StatusCreated, "success", createdUser, nil)
 }
 
 func (u *authUsecase) Login(props *entity.LoginRequest) (resp pkg.Response) {
@@ -97,20 +97,20 @@ func (u *authUsecase) Login(props *entity.LoginRequest) (resp pkg.Response) {
 
 	existingUser, err := u.userRepo.GetByUsername(props.Username, db)
 	if err != nil && errors.Is(err, sql.ErrNoRows) {
-		return resp.Create(http.StatusUnauthorized, "invalid username or password", nil)
+		return pkg.NewResponse(http.StatusUnauthorized, "invalid username or password", nil, nil)
 	} else if err != nil {
 		u.log.Errorf("userRepo.GetByUsername: %s", err.Error())
-		return resp.Create(http.StatusInternalServerError, pkg.ErrServer.Error(), nil)
+		return pkg.NewResponse(http.StatusInternalServerError, pkg.ErrServer.Error(), nil, nil)
 	}
 
 	if !pkg.CheckPasswordHash(props.Password, existingUser.Password) {
-		return resp.Create(http.StatusUnauthorized, "invalid username or password", nil)
+		return pkg.NewResponse(http.StatusUnauthorized, "invalid username or password", nil, nil)
 	}
 
 	token, err := u.jwt.GenerateJWTToken(existingUser.ID, existingUser.Email, existingUser.Username)
 	if err != nil {
 		u.log.Errorf("pkg.GenerateJWTToken: %s", err.Error())
-		return resp.Create(http.StatusInternalServerError, pkg.ErrServer.Error(), nil)
+		return pkg.NewResponse(http.StatusInternalServerError, pkg.ErrServer.Error(), nil, nil)
 	}
 
 	data := map[string]any{
@@ -121,5 +121,5 @@ func (u *authUsecase) Login(props *entity.LoginRequest) (resp pkg.Response) {
 		},
 	}
 
-	return resp.Create(http.StatusOK, "success", data)
+	return pkg.NewResponse(http.StatusOK, "success", data, nil)
 }
