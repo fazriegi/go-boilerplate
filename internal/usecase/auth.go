@@ -118,6 +118,7 @@ func (u *authUsecase) Login(props *entity.LoginRequest) (resp pkg.Response) {
 		"user": entity.UserResponse{
 			Name:     existingUser.Name,
 			Username: existingUser.Username,
+			Email:    existingUser.Email,
 		},
 	}
 
