@@ -15,7 +15,7 @@ A production-ready starter template for building scalable and maintainable Go ap
 
 ## Database Design
 
-![ERD](db/ERD_file.png)
+![ERD](db/ERD.png)
 
 ## Demo
 
