@@ -14,6 +14,7 @@ import (
 type AuthController interface {
 	Register(ctx *fiber.Ctx) error
 	Login(ctx *fiber.Ctx) error
+	CheckToken(ctx *fiber.Ctx) error
 }
 
 type authController struct {
@@ -79,4 +80,8 @@ func (c *authController) Login(ctx *fiber.Ctx) error {
 	response = c.usecase.Login(&reqBody)
 
 	return ctx.Status(response.Status.Code).JSON(response)
+}
+
+func (c *authController) CheckToken(ctx *fiber.Ctx) error {
+	return ctx.Status(200).JSON(pkg.NewResponse(http.StatusOK, "success", nil, nil))
 }

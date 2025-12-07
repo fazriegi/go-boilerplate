@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/fazriegi/go-boilerplate/internal/controller"
 	"github.com/fazriegi/go-boilerplate/internal/infrastructure/repository"
+	"github.com/fazriegi/go-boilerplate/internal/middleware"
 	"github.com/fazriegi/go-boilerplate/internal/pkg"
 	"github.com/fazriegi/go-boilerplate/internal/usecase"
 
@@ -18,5 +19,6 @@ func NewRoute(app *fiber.App, jwt *pkg.JWT) {
 	{
 		v1.Post("/register", authController.Register)
 		v1.Post("/login", authController.Login)
+		v1.Get("/check-token", middleware.Authentication(jwt), authController.CheckToken)
 	}
 }
