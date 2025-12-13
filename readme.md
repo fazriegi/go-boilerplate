@@ -12,6 +12,7 @@ A production-ready starter template for building scalable and maintainable Go ap
 
 - User Registration
 - User Login
+- Refresh Token
 
 ## Database Design
 
