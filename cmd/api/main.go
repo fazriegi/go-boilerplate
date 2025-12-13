@@ -10,7 +10,6 @@ import (
 	"github.com/fazriegi/go-boilerplate/internal/infrastructure/router.go"
 	"github.com/fazriegi/go-boilerplate/internal/middleware"
 	"github.com/fazriegi/go-boilerplate/internal/pkg"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -18,7 +17,7 @@ import (
 func main() {
 	viperConfig := config.NewViper()
 	database.NewMysql(viperConfig)
-	jwt := pkg.InitJWT(viperConfig.GetString("jwt.key"), viperConfig.GetUint16("jwt.expHour"))
+	jwt := pkg.InitJWT(config.GetString("jwt.key"), config.GetUint("jwt.accessToken.expMinute"), config.GetUint("jwt.refreshToken.expDay"))
 	file := logger.New(viperConfig)
 	defer file.Close()
 

@@ -20,6 +20,11 @@
   },
   "jwt": {
     "key": "jwt-key",
-    "expHour": 2
+    "accessToken": {
+      "expMinute": 15
+    },
+    "refreshToken": {
+      "expDay": 7
+    }
   }
 }
